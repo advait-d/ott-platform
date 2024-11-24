@@ -33,13 +33,27 @@ An OTT (Over-the-Top) platform designed to provide users with seamless access to
   ```
   npm install
   ```
-3. Configure Directus:
+3. Install and Configure Directus:
+ 
+    3.1 Install Directus
+    ```
+    npm install -g directus@9.26.0
+    ```
+    3.2 Create a new directory for the Directus project:
+    ```
+    mkdir ott-directus-backend
+    cd ott-directus-backend
+    ```
+    3.3 Start a new Directus project:
+    ```
+    directus init .
+    ```
 
-    Update .env with your database and project-specific settings.
-   
+   Follow the prompts to set up your project, configure the database connection, and create an admin user. Directus supports SQLite, MySQL, PostgreSQL, and others. For local testing, SQLite is the simplest to set up.
+
 5. Run the Directus server:
    ```
-   npx directus start  
+   directus start  
    ```
 6. Start the Ionic server:
    ```
