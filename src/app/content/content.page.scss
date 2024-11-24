@@ -1,0 +1,121 @@
+ion-content {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.section {
+  padding: 12px 16px;
+  background: transparent;
+  
+  .section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 4px;
+    margin-bottom: 12px;
+    
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .item {
+      position: relative;
+      flex: 0 0 auto;
+      width: 150px;
+      text-align: center;
+      transition: transform 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-4px);
+      }
+
+      img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 0px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .bookmark {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 6px;
+        border-radius: 50%;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+        
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        ion-icon {
+          font-size: 18px;
+          color: #4299e1;
+        }
+      }
+
+      .title {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0 4px;
+      }
+    }
+  }
+
+  &:last-child .horizontal-scroll {
+    margin-bottom: 0;
+  }
+}
+
+// Optional container if you want to group sections
+.section-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border-radius: 16px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 16px rgba(31, 38, 135, 0.15);
+  margin-bottom: 6px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Add this to ensure the gradient fills the entire page
+:host {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: block;
+}

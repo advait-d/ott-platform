@@ -1,0 +1,76 @@
+<ion-content class="ion-padding">
+  <div class="register-container">
+    <h1>Create your account</h1>
+    
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <ion-item>
+        <ion-label position="stacked">First Name</ion-label>
+        <ion-input 
+          type="text" 
+          formControlName="first_name"
+          [class.ion-invalid]="isFieldInvalid('first_name')"
+        ></ion-input>
+        <ion-note color="danger" *ngIf="isFieldInvalid('first_name')">
+          First name is required
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input 
+          type="email" 
+          formControlName="email"
+          [class.ion-invalid]="isFieldInvalid('email')"
+        ></ion-input>
+        <ion-note color="danger" *ngIf="isFieldInvalid('email')">
+          Please enter a valid email
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Password</ion-label>
+        <ion-input 
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          [class.ion-invalid]="isFieldInvalid('password')"
+        ></ion-input>
+        <ion-button 
+          fill="clear" 
+          slot="end"
+          (click)="togglePasswordVisibility()"
+        >
+          <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+        <ion-note color="danger" *ngIf="isFieldInvalid('password')">
+          Password must be at least 6 characters
+        </ion-note>
+      </ion-item>
+
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="registerForm.invalid || isLoading"
+      >
+        <ion-spinner *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Register</span>
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        fill="clear" 
+        routerLink="/login"
+        (click)="loginToAccount()"
+      >
+        Already have an account? Login
+      </ion-button>
+    </form>
+
+    <ion-toast
+      [isOpen]="!!errorMessage"
+      [message]="errorMessage"
+      [duration]="3000"
+      (didDismiss)="errorMessage = ''"
+      color="danger"
+    ></ion-toast>
+  </div>
+</ion-content>

@@ -1,26 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>OTT Platform</title>
 
-<head>
-  <meta charset="utf-8" />
-  <title>Ionic App</title>
+    <!-- Meta Tags -->
+    <meta name="description" content="Ionic App for OTT platform" />
+    <meta name="author" content="Your Name" />
 
-  <base href="/" />
+    <!-- Open Graph Meta Tags (optional for social media sharing) -->
+    <meta property="og:title" content="OTT Platform" />
+    <meta property="og:description" content="An OTT platform app built with Ionic and Angular." />
+    <meta property="og:image" content="path_to_image.jpg" />
+    <meta property="og:url" content="https://your-app-url.com" />
 
-  <meta name="color-scheme" content="light dark" />
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="msapplication-tap-highlight" content="no" />
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="assets/icon/apple-icon-180.png" />
+    <link rel="icon" href="assets/icon/favicon.ico" type="image/x-icon" />
 
-  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+    <!-- Link to external stylesheets (optional, if needed) -->
+    <link rel="stylesheet" href="styles.css" />
 
-  <!-- add to homescreen for ios -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-</head>
+    <!-- Ionic Global Stylesheet (this is automatically included by the Ionic CLI) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
 
-<body>
-  <app-root></app-root>
-</body>
+    <!-- Additional meta tags for mobile optimization -->
+    <meta name="theme-color" content="#3880ff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@ionic/core@latest/dist/ionic/ionic.js"></script>
+
+  </head>
+  <body>
+    <!-- This is where the Angular app will load -->
+    <app-root></app-root>
+
+    <!-- Polyfills (for older browsers) -->
+    <script src="runtime.js"></script>
+    <script src="polyfills.js"></script>
+
+    <!-- Main Bundle -->
+    <script src="main.js"></script>
+  </body>
 </html>

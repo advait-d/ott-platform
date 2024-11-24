@@ -1,0 +1,64 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <h1>Login</h1>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input 
+          type="email" 
+          formControlName="email"
+          [class.ion-invalid]="isFieldInvalid('email')"
+        ></ion-input>
+        <ion-note color="danger" *ngIf="isFieldInvalid('email')">
+          Please enter a valid email
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Password</ion-label>
+        <ion-input 
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          [class.ion-invalid]="isFieldInvalid('password')"
+        ></ion-input>
+        <ion-button 
+          fill="clear" 
+          slot="end"
+          (click)="togglePasswordVisibility()"
+        >
+          <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+        <ion-note color="danger" *ngIf="isFieldInvalid('password')">
+          Password must be at least 6 characters
+        </ion-note>
+      </ion-item>
+
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        <ion-spinner *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Login</span>
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        fill="clear" 
+        routerLink="/register"
+        (click)="registerAccount()"
+      >
+        Don't have an account? Register
+      </ion-button>
+    </form>
+
+    <ion-toast
+      [isOpen]="!!errorMessage"
+      [message]="errorMessage"
+      [duration]="3000"
+      (didDismiss)="errorMessage = ''"
+      color="danger"
+    ></ion-toast>
+  </div>
+</ion-content>

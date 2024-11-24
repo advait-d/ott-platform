@@ -1,2 +1,35 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
+:root {
+  /* Background and Text Colors */
+  --ion-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --ion-text-color: #ffffff; /* White text to contrast with dark/gradient backgrounds */
+
+  /* Inputs */
+  --ion-input-background-color: rgba(255, 255, 255, 0.2); /* Transparent input background */
+  --ion-input-color: #ffffff; /* White text in inputs */
+
+  /* Header and Toolbar */
+  --ion-toolbar-background: rgba(0, 0, 0, 0.5);
+  --ion-toolbar-text-color: #ffffff;
+
+  /* Cards and Lists */
+  --ion-card-background: rgba(255, 255, 255, 0.1); /* Glassmorphic effect for cards */
+  --ion-card-text-color: #ffffff;
+
+  /* Buttons */
+  --ion-button-background: #667eea;
+  --ion-button-color: #ffffff;
+
+  /* Chips */
+  --ion-chip-background: rgba(255, 255, 255, 0.2);
+  --ion-chip-color: #ffffff;
+
+  /* Text Styles */
+  --ion-color-medium: rgba(255, 255, 255, 0.7); /* For subtitles and less prominent text */
+  --ion-color-light: rgba(255, 255, 255, 0.5); /* For placeholder text or hints */
+
+  /* Adjust Scrollbar for a Gradient Theme */
+  --ion-scrollbar-color: rgba(255, 255, 255, 0.5);
+  --ion-scrollbar-background: rgba(255, 255, 255, 0.2);
+}
