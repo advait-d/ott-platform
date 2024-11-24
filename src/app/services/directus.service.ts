@@ -304,7 +304,7 @@ export class DirectusService {
     const payload: BookmarkCreatePayload = {
       user_id: userId,
       ...(mediaType === 'Movies'
-        ? { media_id: mediaId }
+        ? { movie_id: mediaId }
         : { tv_show_id: mediaId }),
     };
 
@@ -325,7 +325,7 @@ export class DirectusService {
     const filter = {
       user_id: { _eq: userId },
       ...(type === 'Movies'
-        ? { media_id: { _eq: itemId } }
+        ? { movie_id: { _eq: itemId } }
         : { tv_show_id: { _eq: itemId } }),
     };
 
