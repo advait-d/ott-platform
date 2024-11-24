@@ -6,7 +6,6 @@ import { SafeUrlPipe } from '../pipes/safe-url.pipe';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
-import { Share } from '@capacitor/share';
 
 interface MediaItem {
   id: string;
@@ -41,8 +40,8 @@ export class DetailPage implements OnInit, OnDestroy {
   mediaId!: string;
   mediaType!: CollectionType;
   mediaDetails: MediaItem | null = null;
-  isCurrentlyBookmarked: boolean = false; // Track bookmark state
-  private userId: string | null = null; // Store user ID
+  isCurrentlyBookmarked: boolean = false;
+  private userId: string | null = null;
   error: string | null = null;
   loading = true;
   private subscription: Subscription | null = null;
@@ -53,25 +52,38 @@ export class DetailPage implements OnInit, OnDestroy {
     private location: Location
   ) {}
 
-  async ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id')!;
-    const type = this.route.snapshot.paramMap.get('type');
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      const type = params['type'];
 
-    if (!id) {
-      this.error = 'No ID provided';
-      this.loading = false;
-      return;
+      if (!id) {
+        this.error = 'No ID provided';
+        this.loading = false;
+        return;
+      }
+
+      if (!this.isValidCollectionType(type)) {
+        this.error = 'Invalid media type';
+        this.loading = false;
+        return;
+      }
+
+      this.mediaId = id;
+      this.mediaType = type;
+
+      this.loadContentDetails();
+      this.loadUserData();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
+  }
 
-    if (!this.isValidCollectionType(type)) {
-      this.error = 'Invalid media type';
-      this.loading = false;
-      return;
-    }
-
-    this.mediaId = id;
-    this.mediaType = type;
-
+  private loadUserData() {
     this.directus.getCurrentUser().subscribe({
       next: (user) => {
         this.userId = user.id;
@@ -81,14 +93,6 @@ export class DetailPage implements OnInit, OnDestroy {
         console.error('Error getting current user:', error);
       },
     });
-
-    this.loadContentDetails();
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 
   private checkBookmarkStatus() {
@@ -110,11 +114,9 @@ export class DetailPage implements OnInit, OnDestroy {
     return type !== null && type in COLLECTION_TYPES;
   }
 
-  async loadContentDetails() {
+  loadContentDetails() {
     this.loading = true;
     this.error = null;
-
-    const collection = this.mediaType; // This will be 'Movies' or 'TV_Shows'
 
     this.subscription = this.directus
       .getItemById<MediaItem>(this.mediaType, this.mediaId)
@@ -134,25 +136,8 @@ export class DetailPage implements OnInit, OnDestroy {
       });
   }
 
-  /*
-      const response = await this.directus.getItemById<MediaItem>(this.contentType, this.contentId);
-      if (response?.data) {
-        this.contentDetails = response;
-        console.log('Fetched content: ', this.contentDetails);
-      } else {
-        console.error('No content found');
-      }
-    } catch (error: any) {
-      console.error('Error loading content details:', error);
-      if (error.status === 403) {
-        console.error('Permission denied. Please check your access token and permissions.');
-      }
-    }
-      */
-
   getYouTubeEmbedUrl(mediaURL: string): string {
     try {
-      // Handle both youtube.com and youtu.be URLs
       let videoId = '';
       if (mediaURL.includes('youtu.be')) {
         videoId = mediaURL.split('youtu.be/')[1];
@@ -171,20 +156,6 @@ export class DetailPage implements OnInit, OnDestroy {
     return new Date(dateString).toLocaleDateString();
   }
 
-  async shareMedia() {
-    if (this.mediaDetails) {
-      try {
-        await Share.share({
-          title: this.mediaDetails.title,
-          text: this.mediaDetails.description,
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.error('Error sharing:', error);
-      }
-    }
-  }
-
   goBack() {
     this.location.back();
   }
@@ -193,12 +164,10 @@ export class DetailPage implements OnInit, OnDestroy {
     return this.isCurrentlyBookmarked;
   }
 
-  // Handle favorite/unfavorite action
   favoriteMedia() {
     if (!this.mediaDetails || !this.userId) return;
 
     if (this.isCurrentlyBookmarked) {
-      // Remove bookmark
       this.directus
         .removeBookmark(this.mediaId, this.userId, this.mediaType)
         .subscribe({
@@ -211,7 +180,6 @@ export class DetailPage implements OnInit, OnDestroy {
           },
         });
     } else {
-      // Add bookmark
       this.directus
         .createBookmark(this.mediaId, this.mediaType, this.userId)
         .subscribe({
@@ -226,3 +194,4 @@ export class DetailPage implements OnInit, OnDestroy {
     }
   }
 }
+
