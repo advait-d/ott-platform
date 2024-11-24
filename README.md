@@ -30,9 +30,11 @@ An OTT (Over-the-Top) platform designed to provide users with seamless access to
    cd ott-platform/backend  
   
 2. Install dependencies:
-  ```
-  npm install
-  ```
+  
+    ```
+    npm install
+    ```
+
 3. Install and Configure Directus:
  
     3.1 Install Directus
