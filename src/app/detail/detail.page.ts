@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DirectusService } from '../services/directus.service';
 import { IonicModule } from '@ionic/angular';
 import { SafeUrlPipe } from '../pipes/safe-url.pipe';
@@ -49,11 +49,12 @@ export class DetailPage implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private directus: DirectusService,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const id = params['id'];
       const type = params['type'];
 
@@ -193,5 +194,9 @@ export class DetailPage implements OnInit, OnDestroy {
         });
     }
   }
-}
 
+  logout() {
+    this.directus.logout();
+    this.router.navigate(['login']);
+  }
+}

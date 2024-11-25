@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { map, tap, catchError, mergeMap } from 'rxjs/operators';
+import { map, tap, catchError, mergeMap, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 interface AuthResponse {
   data: {
@@ -40,12 +41,16 @@ interface DirectusResponse<T> {
 export class DirectusService {
   private readonly directusUrl = 'http://localhost:8055';
   private accessTokenSubject = new BehaviorSubject<string | null>(null);
+  private readonly errorMessageSubject = new BehaviorSubject<string | null>(
+    null
+  );
   //private accessToken = 'cWk8gKmTBYYdnx0mN2ZpUJawW6ybEDt3'; // Replace with your Directus access token
 
   // Expose the token as an observable for components that need to react to auth state
   public accessToken$ = this.accessTokenSubject.asObservable();
+  errorMessage: any;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     // Initialize token from localStorage if it exists
     const savedToken = localStorage.getItem('directus_token');
     if (savedToken) {
@@ -84,6 +89,40 @@ export class DirectusService {
           return throwError(() => new Error('Login failed'));
         })
       );
+  }
+
+  logout() {
+    // Return the observable so the caller can handle it
+    return this.http.post<void>(`${this.directusUrl}/auth/logout`, null).pipe(
+      tap(() => {
+        // Clear auth state
+        this.accessTokenSubject.next(null);
+        localStorage.removeItem('accessToken');
+
+        // Clear any stored user data
+        this.clearUserData();
+      }),
+      catchError((error) => {
+        // Log the error but proceed with local cleanup
+        console.error('Logout API error:', error);
+
+        // Still clear local state even if API call fails
+        this.accessTokenSubject.next(null);
+        localStorage.removeItem('accessToken');
+        this.clearUserData();
+
+        throw error;
+      }),
+      finalize(() => {
+        // Always navigate away, regardless of API success/failure
+        this.router.navigate(['/login']);
+      })
+    );
+  }
+
+  private clearUserData() {
+    localStorage.removeItem('userData');
+    this.errorMessageSubject.next(null);
   }
 
   register(user: User): Observable<any> {

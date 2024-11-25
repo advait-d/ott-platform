@@ -2,6 +2,9 @@
   <ion-toolbar>
     <ion-title>Explore</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="goToBookmarks()">
         <ion-icon name="bookmarks-outline" slot="icon-only"></ion-icon>
       </ion-button>

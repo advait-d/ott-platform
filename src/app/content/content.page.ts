@@ -146,6 +146,11 @@ export class ContentPage implements OnInit {
   }
 
   goToBookmarks() {
-    this.router.navigate(['bookmarks'])
+    this.router.navigate(['bookmarks']);
+  }
+
+  logout() {
+    this.directus.logout();
+    this.router.navigate(['login']);
   }
 }

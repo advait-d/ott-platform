@@ -9,6 +9,9 @@
       {{ mediaType === 'Movies' ? 'Movie' : 'TV Show' }} Details
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="favoriteMedia()" [disabled]="loading">
         <ion-icon
           [name]="isBookmarked() ? 'bookmark' : 'bookmark-outline'"
@@ -64,15 +67,8 @@
   </ng-container>
 
   <!-- Empty State -->
-  <div
-    *ngIf="!loading && !error && !mediaDetails"
-    class="empty-state"
-  >
-    <ion-icon
-      name="alert-circle-outline"
-      size="large"
-    ></ion-icon>
+  <div *ngIf="!loading && !error && !mediaDetails" class="empty-state">
+    <ion-icon name="alert-circle-outline" size="large"></ion-icon>
     <p>No media details found</p>
   </div>
 </ion-content>
-
