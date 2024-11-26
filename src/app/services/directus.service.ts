@@ -44,8 +44,6 @@ export class DirectusService {
   private readonly errorMessageSubject = new BehaviorSubject<string | null>(
     null
   );
-  //private accessToken = 'cWk8gKmTBYYdnx0mN2ZpUJawW6ybEDt3'; // Replace with your Directus access token
-
   // Expose the token as an observable for components that need to react to auth state
   public accessToken$ = this.accessTokenSubject.asObservable();
   errorMessage: any;
@@ -81,8 +79,9 @@ export class DirectusService {
       })
       .pipe(
         tap((response) => {
-          const token = response.data.access_token;
-          this.setAccessToken(token);
+          const { access_token, refresh_token } = response.data;
+          this.setAccessToken(access_token);
+          localStorage.setItem('refresh_token', refresh_token);
           console.log('Login Successful');
         }),
         catchError((error) => {
@@ -107,12 +106,12 @@ export class DirectusService {
       .pipe(
         tap(() => {
           // Clear auth state
-          console.log('Logout successful');
           this.accessTokenSubject.next(null);
           localStorage.removeItem('directus_token');
           localStorage.removeItem('refresh_token'); // Remove refresh token
           // Clear any stored user data
           this.clearUserData();
+          console.log('Logout successful');
         }),
         catchError((error) => {
           // Log the error but proceed with local cleanup
@@ -179,11 +178,9 @@ export class DirectusService {
   private getHeaders(): HttpHeaders {
     const token = this.accessTokenSubject.value;
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
-
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
-
     return headers;
   }
 
@@ -269,7 +266,6 @@ export class DirectusService {
    * @param data The data to be added
    * @returns Observable containing the created item data
    */
-
   createItem<T>(collection: string, data: Partial<T>): Observable<T> {
     return this.http
       .post<{ data: T }>(`${this.directusUrl}/items/${collection}`, data, {
