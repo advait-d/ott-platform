@@ -14,7 +14,17 @@
           First name is required
         </ion-note>
       </ion-item>
-
+      <ion-item>
+        <ion-label position="stacked">Last Name</ion-label>
+        <ion-input 
+          type="text" 
+          formControlName="last_name"
+          [class.ion-invalid]="isFieldInvalid('last_name')"
+        ></ion-input>
+        <ion-note color="danger" *ngIf="isFieldInvalid('last_name')">
+          Last name is required
+        </ion-note>
+      </ion-item>
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
         <ion-input 

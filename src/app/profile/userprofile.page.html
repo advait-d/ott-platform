@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading State -->
+  <div class="ion-padding ion-text-center" *ngIf="isLoading">
+    Loading profile...
+  </div>
+
+  <!-- Error State -->
+  <div class="ion-padding ion-text-center" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Profile Content -->
+  <div class="profile-container" *ngIf="!isLoading && !errorMessage">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-name">
+        {{ userData.first_name || userData.email || 'User' }}
+      </div>
+      <div class="profile-email">{{ userData.email }}</div>
+    </div>
+
+    <!-- User Details Section -->
+    <div class="section">
+      <div class="section-title">
+        User Details
+        <ion-button fill="clear" color="primary" (click)="toggleEditMode()">
+          {{ isEditMode ? 'Save' : 'Edit' }}
+        </ion-button>
+      </div>
+
+      <!-- User Details Display/Edit -->
+      <div class="user-details">
+        <ng-container *ngFor="let field of userFields">
+          <div class="detail-item">
+            <span class="detail-label">{{ field.label }}:</span>
+
+            <!-- Display Mode -->
+            <span *ngIf="!isEditMode" class="detail-value">
+              {{ field.value }}
+            </span>
+
+            <!-- Edit Mode -->
+            <input
+              *ngIf="isEditMode"
+              [(ngModel)]="editableUserData[field.key]"
+              class="detail-input"
+              [type]="field.key === 'email' ? 'email' : 'text'"
+            />
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Account Actions Section -->
+    <div class="section">
+      <div class="section-title">Account Actions</div>
+
+      <ion-list>
+        <ion-item button (click)="navigateToBookmarks()">
+          <ion-label>My Bookmarks</ion-label>
+        </ion-item>
+
+        <ion-item button (click)="logout()">
+          <ion-label color="danger">Logout</ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+</ion-content>

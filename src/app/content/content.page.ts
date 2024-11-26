@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { DirectusService } from '../services/directus.service'; // Custom service to interact with Directus
-import { HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { DirectusService } from '../services/directus.service';
+import { HttpClientModule } from '@angular/common/http';
+import { BehaviorSubject, combineLatest, Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 interface MediaItem {
   id: string;
@@ -21,11 +23,30 @@ interface MediaItem {
   imports: [IonicModule, HttpClientModule, CommonModule, FormsModule],
 })
 export class ContentPage implements OnInit {
-  tvShows: any[] = [];
-  movies: any[] = [];
+  tvShows: MediaItem[] = [];
+  movies: MediaItem[] = [];
   bookmarks: Set<string> = new Set();
   isLoading = false;
   error: string | null = null;
+  searchQuery = '';
+
+  private tvShowsSubject = new BehaviorSubject<MediaItem[]>([]);
+  private moviesSubject = new BehaviorSubject<MediaItem[]>([]);
+  private searchQuerySubject = new BehaviorSubject<string>('');
+
+  filteredTvShows$ = combineLatest([
+    this.tvShowsSubject,
+    this.searchQuerySubject
+  ]).pipe(
+    map(([tvShows, query]) => this.filterItems(tvShows, query))
+  );
+
+  filteredMovies$ = combineLatest([
+    this.moviesSubject,
+    this.searchQuerySubject
+  ]).pipe(
+    map(([movies, query]) => this.filterItems(movies, query))
+  );
 
   constructor(private directus: DirectusService, private router: Router) {}
 
@@ -39,13 +60,25 @@ export class ContentPage implements OnInit {
     this.loadBookmarks();
   }
 
+  handleSearch(event: CustomEvent) {
+    const query = (event.target as HTMLIonSearchbarElement).value?.toLowerCase().trim() ?? '';
+    this.searchQuerySubject.next(query);
+  }
+
+  private filterItems(items: MediaItem[], query: string): MediaItem[] {
+    return items.filter(item => 
+      item.title.toLowerCase().includes(query)
+    );
+  }
+  
   private loadTvShows() {
     this.isLoading = true;
     this.error = null;
 
-    this.directus.getItems('TV_Shows').subscribe({
+    this.directus.getItems<MediaItem>('TV_Shows').subscribe({
       next: (shows) => {
         this.tvShows = shows;
+        this.tvShowsSubject.next(shows);
         this.isLoading = false;
       },
       error: (error) => {
@@ -60,9 +93,10 @@ export class ContentPage implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.directus.getItems('Movies').subscribe({
+    this.directus.getItems<MediaItem>('Movies').subscribe({
       next: (movies) => {
         this.movies = movies;
+        this.moviesSubject.next(movies);
         this.isLoading = false;
       },
       error: (error) => {
@@ -100,7 +134,7 @@ export class ContentPage implements OnInit {
     );
   }
 
-  toggleBookmark(event: Event, item: any) {
+  toggleBookmark(event: Event, item: MediaItem) {
     event.stopPropagation();
     this.directus.getCurrentUser().subscribe(
       (user) => {
@@ -131,14 +165,12 @@ export class ContentPage implements OnInit {
     );
   }
 
-  isBookmarked(item: any): boolean {
+  isBookmarked(item: MediaItem): boolean {
     return this.bookmarks.has(item.id);
   }
 
   getThumbnailUrl(fileId: string): string {
-    // Consider moving this to an environment configuration
-    const apiToken = 'cWk8gKmTBYYdnx0mN2ZpUJawW6ybEDt3';
-    return `http://localhost:8055/assets/${fileId}?access_token=${apiToken}`;
+    return this.directus.getAssetUrl(fileId);
   }
 
   openDetail(item: MediaItem, type: 'Movies' | 'TV_Shows') {
@@ -149,8 +181,18 @@ export class ContentPage implements OnInit {
     this.router.navigate(['bookmarks']);
   }
 
+  goToProfile() {
+    this.router.navigate(['profile']);
+  }
+
   logout() {
-    this.directus.logout();
-    this.router.navigate(['login']);
+    this.directus.logout().subscribe(
+      () => {
+        this.router.navigate(['login']);
+      },
+      (error) => {
+        console.error('Error during logout:', error);
+      }
+    );
   }
 }

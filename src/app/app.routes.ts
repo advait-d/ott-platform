@@ -31,6 +31,10 @@ export const routes: Routes = [
     loadComponent: () => import('./detail/detail.page').then(m => m.DetailPage),
   },
   {
+    path: 'profile',
+    loadComponent: () => import('./profile/userprofile.page').then(m => m.UserProfilePage)
+  },
+  {
     path: '**', // Wildcard route for 404
     redirectTo: 'login', // Redirect any undefined routes to login page
   },

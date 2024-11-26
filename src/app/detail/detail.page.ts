@@ -158,7 +158,8 @@ export class DetailPage implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.location.back();
+    this.router.navigate(['content'])
+    //this.location.back();
   }
 
   isBookmarked(): boolean {

@@ -83,6 +83,7 @@ export class DirectusService {
         tap((response) => {
           const token = response.data.access_token;
           this.setAccessToken(token);
+          console.log('Login Successful');
         }),
         catchError((error) => {
           console.error('Login error:', error);
@@ -93,31 +94,47 @@ export class DirectusService {
 
   logout() {
     // Return the observable so the caller can handle it
-    return this.http.post<void>(`${this.directusUrl}/auth/logout`, null).pipe(
-      tap(() => {
-        // Clear auth state
-        this.accessTokenSubject.next(null);
-        localStorage.removeItem('accessToken');
+    return this.http
+      .post<void>(
+        `${this.directusUrl}/auth/logout`,
+        {
+          refresh_token: this.accessTokenSubject.value, // You need to store the refresh token
+        },
+        {
+          headers: this.getHeaders(),
+        }
+      )
+      .pipe(
+        tap(() => {
+          // Clear auth state
+          console.log('Logout successful');
+          this.accessTokenSubject.next(null);
+          localStorage.removeItem('directus_token');
+          localStorage.removeItem('refresh_token'); // Remove refresh token
+          // Clear any stored user data
+          this.clearUserData();
+        }),
+        catchError((error) => {
+          // Log the error but proceed with local cleanup
+          console.error('Logout API error:', error);
+          console.error('Error Details:', {
+            status: error.status,
+            message: error.message,
+            body: error.error,
+          });
+          // Still clear local state even if API call fails
+          this.accessTokenSubject.next(null);
+          localStorage.removeItem('directus_token');
+          localStorage.removeItem('refresh_token');
+          this.clearUserData();
 
-        // Clear any stored user data
-        this.clearUserData();
-      }),
-      catchError((error) => {
-        // Log the error but proceed with local cleanup
-        console.error('Logout API error:', error);
-
-        // Still clear local state even if API call fails
-        this.accessTokenSubject.next(null);
-        localStorage.removeItem('accessToken');
-        this.clearUserData();
-
-        throw error;
-      }),
-      finalize(() => {
-        // Always navigate away, regardless of API success/failure
-        this.router.navigate(['/login']);
-      })
-    );
+          throw error;
+        }),
+        finalize(() => {
+          // Always navigate away, regardless of API success/failure
+          this.router.navigate(['/login']);
+        })
+      );
   }
 
   private clearUserData() {
@@ -269,24 +286,17 @@ export class DirectusService {
       );
   }
 
-  updateItem<T>(
-    collection: string,
-    id: string,
-    data: Partial<T>
-  ): Observable<T> {
+  updateUserItem<T>(id: string, data: Partial<T>): Observable<T> {
+    console.log('Making a PATCH call with payload: ', data);
     return this.http
-      .patch<{ data: T }>(
-        `${this.directusUrl}/items/${collection}/${id}`,
-        data,
-        { headers: this.getHeaders() }
-      )
+      .patch<{ data: T }>(`${this.directusUrl}/users/${id}`, data, {
+        headers: this.getHeaders(),
+      })
       .pipe(
         map((response) => response.data),
         catchError((error) => {
-          console.error(`Error updating ${collection} item:`, error);
-          return throwError(
-            () => new Error(`Failed to update ${collection} item`)
-          );
+          console.error(`Error updating User item:`, error);
+          return throwError(() => new Error(`Failed to update User item`));
         })
       );
   }

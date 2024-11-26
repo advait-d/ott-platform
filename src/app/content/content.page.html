@@ -1,12 +1,28 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Explore</ion-title>
+    <div class="header-content">
+      <ion-title class="ion-hide-sm-down">Explore</ion-title>
+    </div>
+    <ion-searchbar
+      slot="end"
+      search-icon="search-circle"
+      class="custom-searchbar"
+      show-clear-button="focus"
+      value="Show on Focus"
+      [(ngModel)]="searchQuery"
+      (ionChange)="handleSearch($event)"
+      placeholder="Search Movies and TV Shows"
+      [debounce]="0"
+    ></ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button (click)="logout()">
-        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
-      </ion-button>
       <ion-button (click)="goToBookmarks()">
         <ion-icon name="bookmarks-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="goToProfile()">
+        <ion-icon name="person-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -30,10 +46,13 @@
   <!-- TV Shows Section -->
   <div class="section" *ngIf="!isLoading">
     <h2 class="section-title">TV Shows</h2>
+    <div class="no-results" *ngIf="(filteredTvShows$ | async)?.length === 0">
+      No TV shows found matching "{{searchQuery}}"
+    </div>
     <div class="horizontal-scroll">
       <div
         class="item"
-        *ngFor="let tvShow of tvShows"
+        *ngFor="let tvShow of filteredTvShows$ | async"
         (click)="openDetail(tvShow, 'TV_Shows')"
       >
         <img
@@ -54,10 +73,13 @@
   <!-- Movies Section -->
   <div class="section" *ngIf="!isLoading">
     <h2 class="section-title">Movies</h2>
+    <div class="no-results" *ngIf="(filteredMovies$ | async)?.length === 0">
+      No movies found matching "{{searchQuery}}"
+    </div>
     <div class="horizontal-scroll">
       <div
         class="item"
-        *ngFor="let movie of movies"
+        *ngFor="let movie of filteredMovies$ | async"
         (click)="openDetail(movie, 'Movies')"
       >
         <img

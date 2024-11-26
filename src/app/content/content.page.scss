@@ -2,6 +2,69 @@ ion-content {
   --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+.custom-searchbar {
+  --background: #fff;
+  --color: #000;
+  --placeholder-color: #888;
+  --icon-color: #ffffff;
+  --clear-button-color: #ffffff;
+  --border-radius: 20px;
+  flex-grow: 1;
+  max-width: 300px;
+  margin-left: 16px;
+  padding: 0;
+
+  .searchbar-input {
+    color: #ffffff;
+  }
+
+  .searchbar-input-container {
+    padding: 0 8px;
+  }
+
+  .searchbar-search-icon {
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-left: 0;
+    margin-right: 8px;
+  }
+
+  .searchbar-clear-button {
+    position: relative;
+    right: 0;
+    top: 0;
+    margin-right: 0;
+  }
+}
+
+ion-toolbar {
+  --background: transparent;
+  --color: #ffffff;
+
+  .header-content {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    width: 100%;
+  }
+
+  ion-title {
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  ion-buttons {
+    display: flex;
+    flex: none;
+    gap: 10px;
+    margin-left: 16px;
+    ion-button {
+      --color: #ffffff;
+    }
+  }
+}
+
 .section {
   padding: 12px 16px;
   background: transparent;
@@ -18,7 +81,7 @@ ion-content {
     display: flex;
     overflow-x: auto;
     gap: 16px;
-    padding: 4px 4px 40px; // Added bottom padding
+    padding: 4px 4px 40px;
     margin-bottom: 12px;
 
     &::-webkit-scrollbar {
@@ -91,7 +154,7 @@ ion-content {
         overflow: hidden;
         text-overflow: ellipsis;
         padding: 0 4px;
-        min-height: 20px; // Added min-height
+        min-height: 20px;
       }
     }
   }
@@ -101,24 +164,33 @@ ion-content {
   }
 }
 
-// Optional container if you want to group sections
-.section-container {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-  border-radius: 16px;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 16px rgba(31, 38, 135, 0.15);
-  margin-bottom: 6px;
+.no-results {
+  color: #ffffff;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
 
-  &:last-child {
-    margin-bottom: 0;
+// Responsive adjustments
+@media (max-width: 768px) {
+  ion-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    ion-title {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .header-content {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .custom-searchbar {
+      max-width: 400px;
+      margin-left: 0;
+      margin-top: 8px;
+    }
   }
 }
 
-// Add this to ensure the gradient fills the entire page
-:host {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  display: block;
-}
