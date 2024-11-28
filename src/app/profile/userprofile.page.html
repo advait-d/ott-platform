@@ -24,7 +24,7 @@
     <!-- Profile Header -->
     <div class="profile-header">
       <div class="profile-name">
-        {{ userData.first_name || userData.email || 'User' }}
+        {{ ( userData.first_name || '') + " " + ( userData.last_name || '') || userData.email || 'User' }}
       </div>
       <div class="profile-email">{{ userData.email }}</div>
     </div>
@@ -33,7 +33,7 @@
     <div class="section">
       <div class="section-title">
         User Details
-        <ion-button fill="clear" color="primary" (click)="toggleEditMode()">
+        <ion-button fill="clear" color="default" (click)="toggleEditMode()">
           {{ isEditMode ? 'Save' : 'Edit' }}
         </ion-button>
       </div>

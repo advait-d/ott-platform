@@ -73,15 +73,20 @@ export class UserProfilePage implements OnInit {
             'status',
             'theme',
             'last_access',
-            'email_notifications'
-          ].includes(key) &&
-          value !== null &&
-          value !== undefined
+            'email_notifications',
+            'description',
+            'tags',
+            'tfa_secret',
+            'language',
+            'auth_data',
+          ].includes(key) //&&
+        //value !== null &&
+        //value !== undefined
       )
       .map(([key, value]) => ({
         label: this.formatLabel(key),
         value: this.formatValue(value),
-        key: key
+        key: key,
       }));
   }
 
@@ -103,14 +108,15 @@ export class UserProfilePage implements OnInit {
     const updatePayload: any = {};
 
     // Only include changed fields
-    this.userFields.forEach(field => {
+    this.userFields.forEach((field) => {
       if (this.editableUserData[field.key] !== this.userData[field.key]) {
         updatePayload[field.key] = this.editableUserData[field.key];
       }
     });
 
     if (Object.keys(updatePayload).length > 0) {
-      this.directusService.updateUserItem(this.userData.id, updatePayload)
+      this.directusService
+        .updateUserItem(this.userData.id, updatePayload)
         .subscribe({
           next: (updatedUser) => {
             this.userData = updatedUser;
@@ -120,7 +126,7 @@ export class UserProfilePage implements OnInit {
           error: (error) => {
             console.error('Profile update error:', error);
             alert('Failed to update profile. Please try again.');
-          }
+          },
         });
     } else {
       this.isEditMode = false;
@@ -141,6 +147,9 @@ export class UserProfilePage implements OnInit {
     }
     if (typeof value === 'boolean') {
       return value ? 'Yes' : 'No';
+    }
+    if ((value) == null) {
+      return ''
     }
     return String(value);
   }
