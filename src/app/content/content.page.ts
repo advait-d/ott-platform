@@ -143,6 +143,7 @@ export class ContentPage implements OnInit {
           this.directus.removeBookmark(item.id, user.id, type).subscribe(
             () => {
               this.bookmarks.delete(item.id);
+              console.log('Bookmark Removed');
             },
             (error) => {
               console.error('Error removing bookmark:', error);
