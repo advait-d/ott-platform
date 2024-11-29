@@ -102,6 +102,13 @@ export class UserProfilePage implements OnInit {
     }
   }
 
+  get profileName(): string {
+    const firstName = this.userData?.first_name || '';
+    const lastName = this.userData?.last_name || '';
+    const email = this.userData?.email || '';
+    return (firstName + ' ' + lastName).trim() || email || 'User';
+  }
+
   // Save user profile changes
   saveUserProfile() {
     // Prepare the update payload

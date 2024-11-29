@@ -23,9 +23,7 @@
   <div class="profile-container" *ngIf="!isLoading && !errorMessage">
     <!-- Profile Header -->
     <div class="profile-header">
-      <div class="profile-name">
-        {{ ( userData.first_name || '') + " " + ( userData.last_name || '') || userData.email || 'User' }}
-      </div>
+      <div class="profile-name">{{ profileName }}</div>
       <div class="profile-email">{{ userData.email }}</div>
     </div>
 
